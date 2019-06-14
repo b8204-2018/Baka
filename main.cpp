@@ -5,14 +5,14 @@ using  namespace std;
 
 class Sort {
 public:
-    virtual void sortName() = 0;
+    virtual string sortName() = 0;
     virtual void sort(int *arr, int n) = 0;
 };
 
 class Cocktail : public Sort {
 public:
-    void sortName() override {
-        cout << "Cocktail Sort : " << endl;
+    string sortName() override {
+        return "Cocktail Sort";
     }
     void sort (int *arr, int n) {
         bool swapped = true;
