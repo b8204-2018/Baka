@@ -80,8 +80,8 @@ public:
                 if (neg == false) {
                     result[num] = stof(sty);
                 } else {
-                    result[num] = stof(sty)*(-1);
-                    neg=false;
+                    result[num] = stof(sty) * (-1);
+                    neg = false;
                 }
                 num++;
             } else if (example[i] == 'x') {
@@ -134,7 +134,7 @@ class ThirdTask : public Tasks {
 public:
     double *calculateTask(double *var) override {
         double *solve = new double[2];
-        if (var[1]>0){
+        if (var[1] > 0) {
             solve[0] = (var[0] - var[1]);
         } else {
             solve[0] = (var[0] + var[1]);
