@@ -6,14 +6,14 @@
 using namespace std;
 
 
-class AbstractMagicCreatures {
+class MagicCreatures {
 private:
     int HP;
     int Damage;
 public:
-    AbstractMagicCreatures() {}
+    MagicCreatures() {}
 
-    void Attack(AbstractMagicCreatures &target) {
+    void Attack(MagicCreatures &target) {
         target.changeHP(getDemage());
     }
 
@@ -71,7 +71,7 @@ public:
     }
 };
 
-class magicGirls : public AbstractMagicCreatures {
+class magicGirls : public MagicCreatures {
 public:
     SoulGem soulGem;
 
@@ -93,7 +93,7 @@ public:
 
     SoulGem pinkSoulGeme = SoulGem(pinkSoulGeme.getSoulGemScore());
 
-    void SuperAttack(AbstractMagicCreatures &targett) {
+    void SuperAttack(MagicCreatures &targett) {
         targett.changeHP(getDemage() * 3);
     };
 };
@@ -130,7 +130,7 @@ public:
     };
 };
 
-class Witch : public AbstractMagicCreatures {
+class Witch : public MagicCreatures {
 public:
     Witch(int HP, int Damage) {
         this->SetHP(HP);
