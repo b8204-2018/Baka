@@ -77,13 +77,7 @@ list<string> ExpressionParser::parse(string infix) {
             }
 
         } else {
-            string buff = ""; // временная буферная строка для n-значных чисед
-            while (isdigit(curr) != false) {
-                buff += curr;
-                curr = infix[i];
-                i++;
-            }
-            postfix.push_back(buff);
+            stack1.push_front(currs.assign(1, curr));
         }
         prev = curr;
     }
