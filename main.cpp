@@ -13,16 +13,16 @@ public:
 
     int ExampleFormat(string path) {
         size_t ex_form;
-        ifstream myFile(path);
+        ifstream myFile;
+        myFile.open(path, ios_base::in);
+        if (!myFile.is_open()) {
+            throw invalid_argument(path);
+        }
         if (myFile.is_open()) {
             myFile >> ex_form;
             myFile.close();
             return ex_form;
-        } else {
-            cout << "File not found!";
-            myFile.close();
         }
-
     };
 
     string Example(string path) {
@@ -31,6 +31,9 @@ public:
         ifstream myFile(path);
         const int maxStringLengh = 20;
         int numStringsToSkip = 1; //кол-во пропускамых строк перед чтением
+        if (!myFile.is_open()) {
+            throw invalid_argument(path);
+        }
         if (myFile.is_open()) {
             for (int i = 0;
                  i < numStringsToSkip; i++) // пропускаем не нужные нам строки (читаем и ничего с ними не делаем)
@@ -42,9 +45,6 @@ public:
             myFile >> takeExample;
             myFile.close();
             return takeExample;
-        } else {
-            cout << "File not found!";
-            myFile.close();
         }
     }
 
@@ -100,12 +100,12 @@ public:
 
 };
 
-class Tasks {
+class Solvers {
 public:
     virtual double *calculateTask(double *var) = 0;
 };
 
-class FirstTask : public Tasks {
+class QuadraticEquationSolver : public Solvers {
 public:
     double *calculateTask(double *var) override {
         double *solve = new double[3];
@@ -121,7 +121,7 @@ public:
     }
 };
 
-class SecondTask : public Tasks {
+class AddSolver : public Solvers {
 public:
     double *calculateTask(double *var) override {
         double *solve = new double[2];
@@ -130,7 +130,7 @@ public:
     }
 };
 
-class ThirdTask : public Tasks {
+class SubSolver : public Solvers {
 public:
     double *calculateTask(double *var) override {
         double *solve = new double[2];
@@ -143,7 +143,7 @@ public:
     }
 };
 
-class FourthTask : public Tasks {
+class MulSolver : public Solvers {
 public:
     double *calculateTask(double *var) override {
         double *solve = new double[2];
@@ -152,7 +152,7 @@ public:
     }
 };
 
-class FifthTask : public Tasks {
+class DivSolver : public Solvers {
 public:
     double *calculateTask(double *var) override {
         double *solve = new double[2];
@@ -163,13 +163,16 @@ public:
 
 class SolutionsLib {
 private:
-    vector<Tasks *> allSolutions;
+    vector<Solvers *> allSolutions;
 public:
-    void addSolution(Tasks *solution) {
+    void addSolution(Solvers *solution) {
         allSolutions.push_back(solution);
     }
 
-    Tasks *returnSolution(int exNumb) {
+    Solvers *returnSolution(int exNumb) {
+        if (allSolutions[exNumb - 1] == nullptr) {
+            throw throw out_of_range(to_string(exNumb));
+        }
         return allSolutions[exNumb - 1];
     }
 };
@@ -205,13 +208,13 @@ public:
             : solutionsLib(solutionsLib), reader(reader), printer(printer), parser(parser) {
     }
 
-    Tasks *setSolution(string str) {
+    Solvers *setSolution(string str) {
         size_t exNumb = reader.ExampleFormat(str);
         return solutionsLib->returnSolution(exNumb);
     }
 
     void calcSolution(string str) {
-        Tasks *exSolution;
+        Solvers *exSolution;
         exSolution = setSolution(str);
         double *answ = exSolution->calculateTask(parser.ParseringNumbs(reader.Example(str)));
         printer.print(answ, reader.ExampleFormat(str), reader.Example(str));
@@ -228,26 +231,40 @@ int main() {
     string path4 = "d:\\ProgramData\\Projects\\primer\\files\\fourth.txt";
     string path5 = "d:\\ProgramData\\Projects\\primer\\files\\fifth.txt";
 
-    FirstTask exam1;
-    SecondTask exam2;
-    ThirdTask exam3;
-    FourthTask exam4;
-    FifthTask exam5;
+    try {
+        QuadraticEquationSolver exam1;
+        AddSolver exam2;
+        SubSolver exam3;
+        MulSolver exam4;
+        DivSolver exam5;
 
-    SolutionsLib solutionsLib;
+        SolutionsLib solutionsLib;
+        solutionsLib.addSolution(&exam1);
+        solutionsLib.addSolution(&exam2);
+        solutionsLib.addSolution(&exam3);
+        solutionsLib.addSolution(&exam4);
+        solutionsLib.addSolution(&exam5);
+    }
 
-    solutionsLib.addSolution(&exam1);
-    solutionsLib.addSolution(&exam2);
-    solutionsLib.addSolution(&exam3);
-    solutionsLib.addSolution(&exam4);
-    solutionsLib.addSolution(&exam5);
+    catch (out_of_range(e)) {
+        cout << e.what() << endl;
+        return 0;
+    }
+    try {
 
-    Calculator calculator(&solutionsLib, readFile, printer, parser);
-    calculator.calcSolution(path1);
-    calculator.calcSolution(path2);
-    calculator.calcSolution(path3);
-    calculator.calcSolution(path4);
-    calculator.calcSolution(path5);
+
+        Calculator calculator(&solutionsLib, readFile, printer, parser);
+        calculator.calcSolution(path1);
+        calculator.calcSolution(path2);
+        calculator.calcSolution(path3);
+        calculator.calcSolution(path4);
+        calculator.calcSolution(path5);
+    }
+
+    catch (invalid_argument(e)) {
+        cout << "ERROR! \"" << e.what() << "\" no solution" << endl;
+        return 0;
+    }
 
     return 0;
 }
