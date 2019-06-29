@@ -1,103 +1,286 @@
 #include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <time.h>
 
 using namespace std;
 
-class Sort {
+
+class AbstractMagicCreatures {
+private:
+    int HP;
+    int Damage;
 public:
-    virtual void setArray(int n) = 0;
-    virtual string sortName() = 0;
+    AbstractMagicCreatures() {}
+
+    void Attack(AbstractMagicCreatures &target) {
+        target.changeHP(getDemage());
+    }
+
+    void SetHP(int a) {
+        HP = a;
+    }
+
+    int getHP() {
+        return HP;
+    }
+
+    void setDamage(int d) {
+        Damage = d;
+    }
+
+    int getDemage() {
+        return Damage;
+    }
+
+    void changeHP(int emount) {
+        HP -= emount;
+        //this->HP = HP - emount;
+        //return HP;
+    }
 };
 
-class Cocktail : public Sort {
-    int n;
-    int* arr;
+class SoulGem {
+private:
+    short SoulGemScore;
 public:
-    string sortName() override {
-        return "CocktailSort";
+    SoulGem() {}
+
+    SoulGem(short score) {
+        SoulGemScore = score;
     }
 
-    void setArray(int n) override;
-    void Sort();
-    void PrintArray(class Sort &c1);
-};
-
-
-void Cocktail::setArray(int n) {
-    this->n = n;
-    arr = new int[n];
-    for (int i = 0; i < this->n; i++) {
-        cout << "Array[" << i << "] - ";
-        cin >> arr[i];
+    int getSoulGemScore() {
+        return SoulGemScore;
     }
-};
 
+    int setSoulGemScore(short s) {
+        SoulGemScore = s;
+    }
 
-void Cocktail::Sort() {
-
-    bool swapped = true;
-    int start = 0;
-    int end = n - 1;
-
-    while (swapped) {
-        // reset the swapped flag on entering
-        // the loop, because it might be true from
-        // a previous iteration.
-        swapped = false;
-
-        // loop from left to right same as
-        // the bubble sort
-        for (int i = start; i < end; ++i) {
-            if (arr[i] > arr[i + 1]) {
-                swap(arr[i], arr[i + 1]);
-                swapped = true;
-            }
+    bool isSoulGemOk() {
+        if (SoulGemScore >= 3) {
+            return true;
+        } else {
+            return false;
         }
-
-        // if nothing moved, then array is sorted.
-        if (!swapped)
-            break;
-
-        // otherwise, reset the swapped flag so that it
-        // can be used in the next stage
-        swapped = false;
-
-        // move the end point back by one, because
-        // item at the end is in its rightful spot
-        --end;
-
-        // from right to left, doing the
-        // same comparison as in the previous stage
-        for (int i = end - 1; i >= start; --i) {
-            if (arr[i] > arr[i + 1]) {
-                swap(arr[i], arr[i + 1]);
-                swapped = true;
-            }
-        }
-
-        // increase the starting point, because
-        // the last stage would have moved the next
-        // smallest number to its rightful spot.
-        ++start;
     }
+
+    void WasteSoulGemScore(short emount) {
+        SoulGemScore -= emount;
+    }
+};
+
+class magicGirls : public AbstractMagicCreatures {
+public:
+    SoulGem soulGem;
+
+    magicGirls() {
+        this->soulGem = soulGem;
+    }
+
 
 };
 
-void Cocktail::PrintArray(class Sort &c1) {
-    cout << c1.sortName()<< endl;
-    for (int i = 0; i < n; i++)
-        cout << arr[i] << " ";
-    cout << endl;
-}
+class Pink : public magicGirls {
+public:
+
+    Pink(int HP, int Damage, short SoulGemScore) {
+        this->SetHP(HP);
+        this->setDamage(Damage);
+        this->pinkSoulGeme.setSoulGemScore(SoulGemScore);
+    }
+
+    SoulGem pinkSoulGeme = SoulGem(pinkSoulGeme.getSoulGemScore());
+
+    void SuperAttack(AbstractMagicCreatures &targett) {
+        targett.changeHP(getDemage() * 3);
+    };
+};
+
+class Blue : public magicGirls {
+public:
+
+    Blue(int HP, int Damage, short SoulGemScore) {
+        this->SetHP(HP);
+        this->setDamage(Damage);
+        this->blueSoulGeme.setSoulGemScore(SoulGemScore);
+    }
+
+    SoulGem blueSoulGeme = SoulGem(blueSoulGeme.getSoulGemScore());
+
+    void Heal(magicGirls &target) {
+        target.changeHP(-(getHP() * 0.5));
+    };
+};
+
+class Purple : public magicGirls {
+public:
+
+    Purple(int HP, int Damage, short SoulGemScore) {
+        this->SetHP(HP);
+        this->setDamage(Damage);
+        this->purpleSoulGeme.setSoulGemScore(SoulGemScore);
+    }
+
+    SoulGem purpleSoulGeme = SoulGem(purpleSoulGeme.getSoulGemScore());
+
+    bool StopTime() {
+        return true;
+    };
+};
+
+class Witch : public AbstractMagicCreatures {
+public:
+    Witch(int HP, int Damage) {
+        this->SetHP(HP);
+        this->setDamage(Damage);
+    }
+
+    int AttackOnArea() {
+        return 123;
+    }
+};
 
 int main() {
+    Witch witch(200, 30);
+    Purple purple(60, 10, 3);
+    Blue blue(80, 30, 6);
+    Pink pink(100, 20, 6);
+    cout << "blue: " << blue.getHP() << endl;
+    cout << "pink: " << pink.getHP() << endl;
+    cout << "purple: " << purple.getHP() << endl;
+    cout << "witch: " << witch.getHP() << endl;
+    vector<magicGirls> magic;
+    magic.push_back(purple);
+    magic.push_back(pink);
+    magic.push_back(blue);
+    while ((witch.getHP() > 0) && ((pink.getHP() > 0) || (blue.getHP() > 0) || (purple.getHP() > 0))) {
+        bool time_stoped;
+        int x, y, z;
+        cout << "input 1 for attack" << endl;
+        cout << "input 2 for superattack" << endl;
+        cin >> x;
+        switch (x) {
+            case 1: {
+                pink.Attack(witch);
+                break;
+            }
+            case 2: {
+                if (pink.pinkSoulGeme.isSoulGemOk()) {
+                    pink.SuperAttack(witch);
+                    pink.pinkSoulGeme.WasteSoulGemScore(3);
+                } else {
+                    cout << "too weak!" << endl;
+                }
+                break;
+            }
+            default:
+                cout << "neverno" << endl;
+                break;
+        }
+        cout << "input 1 for attack" << endl;
+        cout << "input 2 for heal" << endl;
+        cin >> y;
+        switch (y) {
+            case 1: {
+                blue.Attack(witch);
+                break;
+            }
+            case 2: {
+                if (blue.blueSoulGeme.isSoulGemOk()) {
+                    if ((pink.getHP() <= blue.getHP()) && (pink.getHP() <= purple.getHP())) {
+                        blue.Heal(pink);
+                    } else {
+                        if (purple.getHP() <= blue.getHP()) {
+                            blue.Heal(purple);
+                        } else {
+                            blue.Heal(blue);
+                        }
+                    }
+                    blue.blueSoulGeme.WasteSoulGemScore(3);
+                } else {
+                    cout << "too weak!" << endl;
+                }
 
-    Cocktail c1;
-    int n;
-    cout << "Number of array elements - ";
-    cin >> n;
-    c1.setArray(n);
-    c1.PrintArray(c1);
-    c1.Sort();
-    c1.PrintArray(c1);
 
+                break;
+            }
+            default:
+                cout << "neverno" << endl;
+                break;
+
+        }
+        cout << "input 1 for attack" << endl;
+        cout << "input 2 for stoptime" << endl;
+        cin >> z;
+        switch (z) {
+            case 1: {
+                purple.Attack(witch);
+                break;
+            }
+            case 2: {
+                if (purple.purpleSoulGeme.isSoulGemOk()) {
+                    time_stoped = purple.StopTime();
+                    purple.purpleSoulGeme.WasteSoulGemScore(3);
+                } else {
+                    cout << "too weak!" << endl;
+                }
+
+                break;
+            }
+            default: {
+                cout << "neverno" << endl;
+                break;
+            }
+        }
+
+        if (!time_stoped) {
+            srand(time(NULL));
+            int rand = rand % 1;
+            switch (rand) {
+                case 1 : {
+
+                    for (magicGirls x:magic) {
+                        x.changeHP(witch.AttackOnArea());
+                    }
+                    break;
+                }
+                default: {
+                    //  srand(time(NULL));
+                    int random_target = rand % 3 + 1;
+                    switch (random_target) {
+                        case 1 : {
+                            witch.Attack(blue);
+                            break;
+                        }
+                        case 2 : {
+                            witch.Attack(pink);
+                            break;
+                        }
+                        case 3 : {
+                            witch.Attack(purple);
+                            break;
+                        }
+                        default : {
+                            witch.Attack(pink);
+                            break;
+                        }
+
+                    }
+                }
+
+            }
+        }
+        cout << "blue: " << blue.getHP() << endl;
+        cout << "pink: " << pink.getHP() << endl;
+        cout << "purple: " << purple.getHP() << endl;
+        cout << "witch: " << witch.getHP() << endl;
+        time_stoped = false;
+    }
+    if (witch.getHP() <= 0) { cout << "Witch is dead!" << endl; }
+    if ((pink.getHP() <= 0) || (blue.getHP() <= 0) || (purple.getHP() <= 0)) {
+        cout << "Magic Girls all dead!" << endl;
+    }
+    return 0;
 }
